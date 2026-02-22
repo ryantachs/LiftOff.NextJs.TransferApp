@@ -19,7 +19,7 @@ interface RevenueData {
   totalRevenue: string
   bookingCount: number
   averageFare: string
-  breakdown: { vehicleClass: string; revenue: string; bookings: number }[]
+  breakdown: { vehicleClass: string; vehicleClassId: string; revenue: string; bookings: number }[]
   dailyRevenue: { date: string; revenue: number }[]
 }
 
@@ -33,6 +33,7 @@ interface VolumeData {
 interface UtilisationData {
   drivers: {
     driverName: string
+    driverId: string
     completedBookings: number
     totalRevenue: string
   }[]
@@ -271,7 +272,7 @@ export default function ReportsPage() {
                   </thead>
                   <tbody>
                     {revenueData.breakdown.map((row) => (
-                      <tr key={row.vehicleClass} className="border-b">
+                      <tr key={row.vehicleClassId} className="border-b">
                         <td className="px-4 py-2">{row.vehicleClass}</td>
                         <td className="px-4 py-2">£{row.revenue}</td>
                         <td className="px-4 py-2">{row.bookings}</td>
@@ -372,7 +373,7 @@ export default function ReportsPage() {
                 </thead>
                 <tbody>
                   {utilisationData.drivers.map((row) => (
-                    <tr key={row.driverName} className="border-b">
+                    <tr key={row.driverId} className="border-b">
                       <td className="px-4 py-2">{row.driverName}</td>
                       <td className="px-4 py-2">{row.completedBookings}</td>
                       <td className="px-4 py-2">£{row.totalRevenue}</td>
@@ -447,8 +448,8 @@ export default function ReportsPage() {
                         </tr>
                       </thead>
                       <tbody>
-                        {cancellationData.byReason.map((row) => (
-                          <tr key={row.reason} className="border-b">
+                        {cancellationData.byReason.map((row, index) => (
+                          <tr key={`${row.reason}-${index}`} className="border-b">
                             <td className="px-4 py-2">{row.reason}</td>
                             <td className="px-4 py-2">{row.count}</td>
                           </tr>
