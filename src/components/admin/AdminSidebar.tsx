@@ -8,13 +8,19 @@ import {
   BookOpen,
   CalendarClock,
   PlusCircle,
+  Users,
+  Car,
+  PoundSterling,
 } from "lucide-react"
 
-const navItems = [
+const navItems: { href: string; label: string; icon: typeof LayoutDashboard; adminOnly?: boolean }[] = [
   { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/bookings", label: "Bookings", icon: BookOpen },
   { href: "/admin/bookings/new", label: "New Booking", icon: PlusCircle },
   { href: "/admin/dispatch", label: "Dispatch", icon: CalendarClock },
+  { href: "/admin/drivers", label: "Drivers", icon: Users },
+  { href: "/admin/vehicles", label: "Vehicles", icon: Car },
+  { href: "/admin/pricing", label: "Pricing", icon: PoundSterling, adminOnly: true },
 ]
 
 interface AdminSidebarProps {
@@ -30,7 +36,9 @@ export function AdminSidebar({ role }: AdminSidebarProps) {
         <span className="text-lg font-bold">Admin Panel</span>
       </div>
       <nav className="flex-1 space-y-1 p-4">
-        {navItems.map((item) => {
+        {navItems
+          .filter((item) => !item.adminOnly || role === "ADMIN")
+          .map((item) => {
           const Icon = item.icon
           const isActive = pathname.startsWith(item.href)
           return (
