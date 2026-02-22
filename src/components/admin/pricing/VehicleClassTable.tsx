@@ -46,11 +46,7 @@ export function VehicleClassTable({ vehicleClasses, onSave }: VehicleClassTableP
     if (!editingId) return
     setIsSaving(true)
     try {
-      await onSave(editingId, {
-        ...editForm,
-        baseRatePerKm: editForm.baseRatePerKm,
-        minimumFare: editForm.minimumFare,
-      })
+      await onSave(editingId, editForm)
       setEditingId(null)
     } finally {
       setIsSaving(false)

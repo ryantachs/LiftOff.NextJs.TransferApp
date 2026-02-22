@@ -1,7 +1,7 @@
 import { z } from "zod"
 
 export const vehicleSchema = z.object({
-  registration: z.string().min(2).max(10).toUpperCase(),
+  registration: z.string().min(2).max(10).transform((val) => val.toUpperCase()),
   make: z.string().min(1).max(50),
   model: z.string().min(1).max(50),
   year: z.number().int().min(2000).max(new Date().getFullYear() + 1),

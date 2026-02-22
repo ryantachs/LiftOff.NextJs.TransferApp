@@ -78,7 +78,7 @@ export default function AdminVehicleDetailPage() {
     isActive: boolean
     driverId?: string | null
   }) {
-    // Update vehicle
+    // Update vehicle and driver assignment in single request
     const vehicleRes = await fetch(`/api/admin/vehicles/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -92,34 +92,12 @@ export default function AdminVehicleDetailPage() {
         motExpiry: data.motExpiry,
         serviceExpiry: data.serviceExpiry,
         isActive: data.isActive,
+        driverId: data.driverId,
       }),
     })
     if (!vehicleRes.ok) {
       const errData = await vehicleRes.json()
       throw new Error(errData.error ?? "Failed to update vehicle")
-    }
-
-    // If driver assignment changed, update the driver
-    if (data.driverId !== undefined) {
-      const currentDriverId = vehicle?.driver?.id ?? null
-      if (data.driverId !== currentDriverId) {
-        // Unassign from old driver
-        if (currentDriverId) {
-          await fetch(`/api/admin/drivers/${currentDriverId}`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ vehicleId: null }),
-          })
-        }
-        // Assign to new driver
-        if (data.driverId) {
-          await fetch(`/api/admin/drivers/${data.driverId}`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ vehicleId: id }),
-          })
-        }
-      }
     }
 
     router.push("/admin/vehicles")

@@ -72,13 +72,19 @@ export async function PATCH(
 
   const { id } = await params
   const body = await request.json()
-  const parsed = vehiclePatchSchema.safeParse(body)
+
+  // Separate driverId from vehicle fields for Zod validation
+  const { driverId: newDriverId, ...vehicleBody } = body
+  const parsed = vehiclePatchSchema.safeParse(vehicleBody)
 
   if (!parsed.success) {
     return Response.json({ error: parsed.error.flatten() }, { status: 400 })
   }
 
-  const existing = await prisma.vehicle.findUnique({ where: { id } })
+  const existing = await prisma.vehicle.findUnique({
+    where: { id },
+    include: { driver: { select: { id: true } } },
+  })
   if (!existing) {
     return Response.json({ error: "Not found" }, { status: 404 })
   }
@@ -96,9 +102,29 @@ export async function PATCH(
   if (data.serviceExpiry !== undefined) updateData.serviceExpiry = data.serviceExpiry ? new Date(data.serviceExpiry) : null
   if (data.isActive !== undefined) updateData.isActive = data.isActive
 
-  const vehicle = await prisma.vehicle.update({
-    where: { id },
-    data: updateData,
+  // Handle driver assignment atomically
+  const currentDriverId = existing.driver?.id ?? null
+  const hasDriverChange = newDriverId !== undefined && newDriverId !== currentDriverId
+
+  const vehicle = await prisma.$transaction(async (tx) => {
+    // Unassign old driver from this vehicle
+    if (hasDriverChange && currentDriverId) {
+      await tx.driver.update({
+        where: { id: currentDriverId },
+        data: { vehicleId: null },
+      })
+    }
+    // Assign new driver to this vehicle
+    if (hasDriverChange && newDriverId) {
+      await tx.driver.update({
+        where: { id: newDriverId },
+        data: { vehicleId: id },
+      })
+    }
+    return tx.vehicle.update({
+      where: { id },
+      data: updateData,
+    })
   })
 
   return Response.json(vehicle)

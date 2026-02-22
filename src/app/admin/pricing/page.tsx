@@ -98,8 +98,8 @@ export default function AdminPricingPage() {
       body: JSON.stringify({
         name: data.name,
         description: data.description,
-        baseRatePerKm: data.baseRatePerKm ? parseFloat(data.baseRatePerKm) : undefined,
-        minimumFare: data.minimumFare ? parseFloat(data.minimumFare) : undefined,
+        baseRatePerKm: data.baseRatePerKm !== undefined ? Number(data.baseRatePerKm) : undefined,
+        minimumFare: data.minimumFare !== undefined ? Number(data.minimumFare) : undefined,
         maxPassengers: data.maxPassengers,
         maxLuggage: data.maxLuggage,
         sortOrder: data.sortOrder,

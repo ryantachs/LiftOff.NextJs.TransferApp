@@ -13,7 +13,7 @@ import {
   PoundSterling,
 } from "lucide-react"
 
-const navItems = [
+const navItems: { href: string; label: string; icon: typeof LayoutDashboard; adminOnly?: boolean }[] = [
   { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/bookings", label: "Bookings", icon: BookOpen },
   { href: "/admin/bookings/new", label: "New Booking", icon: PlusCircle },
@@ -37,7 +37,7 @@ export function AdminSidebar({ role }: AdminSidebarProps) {
       </div>
       <nav className="flex-1 space-y-1 p-4">
         {navItems
-          .filter((item) => !("adminOnly" in item && item.adminOnly) || role === "ADMIN")
+          .filter((item) => !item.adminOnly || role === "ADMIN")
           .map((item) => {
           const Icon = item.icon
           const isActive = pathname.startsWith(item.href)

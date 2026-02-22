@@ -19,11 +19,7 @@ export async function GET(request: NextRequest) {
       vehicleClass: { select: { id: true, name: true } },
       driver: { select: { id: true, name: true } },
     },
-    orderBy: sortBy === "motExpiry"
-      ? { motExpiry: { sort: sortDir, nulls: "last" } }
-      : sortBy === "serviceExpiry"
-        ? { serviceExpiry: { sort: sortDir, nulls: "last" } }
-        : { [sortBy]: sortDir },
+    orderBy: { [sortBy]: sortDir },
   })
 
   return Response.json({
