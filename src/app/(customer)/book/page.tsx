@@ -23,15 +23,21 @@ export default function QuoteFormPage() {
     const data = {
       journeyType: formData.get("journeyType") as string,
       pickupAddress: formData.get("pickupAddress") as string,
-      pickupLat: parseFloat(formData.get("pickupLat") as string) || 51.4700,
-      pickupLng: parseFloat(formData.get("pickupLng") as string) || -0.4543,
+      pickupLat: parseFloat(formData.get("pickupLat") as string),
+      pickupLng: parseFloat(formData.get("pickupLng") as string),
       dropoffAddress: formData.get("dropoffAddress") as string,
-      dropoffLat: parseFloat(formData.get("dropoffLat") as string) || 51.5074,
-      dropoffLng: parseFloat(formData.get("dropoffLng") as string) || -0.1278,
+      dropoffLat: parseFloat(formData.get("dropoffLat") as string),
+      dropoffLng: parseFloat(formData.get("dropoffLng") as string),
       flightNumber: (formData.get("flightNumber") as string) || undefined,
       pickupDateTime: formData.get("pickupDateTime") as string,
       passengers: parseInt(formData.get("passengers") as string, 10),
       luggage: parseInt(formData.get("luggage") as string, 10),
+    }
+
+    if (isNaN(data.pickupLat) || isNaN(data.pickupLng) || isNaN(data.dropoffLat) || isNaN(data.dropoffLng)) {
+      setError("Please select valid pickup and dropoff locations using the address fields.")
+      setLoading(false)
+      return
     }
 
     const response = await fetch("/api/quotes", {
@@ -48,6 +54,7 @@ export default function QuoteFormPage() {
     }
 
     const result = await response.json()
+    sessionStorage.setItem(`quote-${result.quoteId}`, JSON.stringify(result))
     router.push(`/book/${result.quoteId}`)
   }
 

@@ -7,7 +7,8 @@ import bcrypt from "bcryptjs"
 import { loginSchema } from "@/schemas/auth"
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  adapter: PrismaAdapter(prisma) as any,
+  // @ts-expect-error - PrismaAdapter types conflict with extended User.role in next-auth.d.ts
+  adapter: PrismaAdapter(prisma),
 
   providers: [
     Credentials({

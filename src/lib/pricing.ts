@@ -50,6 +50,7 @@ export async function calculatePrice(
       basePrice = basePrice.add(amount)
     } else {
       basePrice = basePrice.sub(amount)
+      if (basePrice.lessThan(0)) basePrice = new Decimal(0)
     }
   }
 

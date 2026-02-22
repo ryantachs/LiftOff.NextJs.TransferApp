@@ -19,6 +19,9 @@ export async function getDistanceMatrix(
   url.searchParams.set("key", apiKey)
 
   const response = await fetch(url.toString())
+  if (!response.ok) {
+    throw new Error(`Distance Matrix API HTTP error: ${response.status}`)
+  }
   const data = await response.json()
 
   if (data.status !== "OK") {

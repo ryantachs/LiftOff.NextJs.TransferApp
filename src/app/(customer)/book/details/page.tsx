@@ -17,100 +17,92 @@ interface BookingDraft {
   durationMins: number
 }
 
+async function redirectToCheckout(bookingId: string) {
+  const checkoutResponse = await fetch("/api/payments/checkout", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ bookingId }),
+  })
+
+  if (checkoutResponse.ok) {
+    const { url } = await checkoutResponse.json()
+    if (url) {
+      window.location.assign(url)
+    }
+  }
+}
+
+function ReturnFromPayment({ bookingId }: { bookingId: string }) {
+  useEffect(() => {
+    redirectToCheckout(bookingId)
+  }, [bookingId])
+
+  return (
+    <div className="mx-auto max-w-2xl text-center py-12">
+      <p className="text-muted-foreground">Redirecting to payment...</p>
+    </div>
+  )
+}
+
 function BookingDetailsContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [draft, setDraft] = useState<BookingDraft | null>(null)
+  const returnBookingId = searchParams.get("bookingId")
+  const [draft] = useState<BookingDraft | null>(() => {
+    if (typeof window === "undefined") return null
+    const stored = sessionStorage.getItem("booking-draft")
+    return stored ? JSON.parse(stored) as BookingDraft : null
+  })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
 
-  useEffect(() => {
-    const bookingId = searchParams.get("bookingId")
-    if (bookingId) {
-      handlePayment(bookingId)
-      return
-    }
+  if (returnBookingId) {
+    return <ReturnFromPayment bookingId={returnBookingId} />
+  }
 
-    const stored = sessionStorage.getItem("booking-draft")
-    if (stored) {
-      setDraft(JSON.parse(stored))
-    } else {
-      setError("No booking in progress. Please start a new quote.")
-    }
-  }, [searchParams])
-
-  async function handlePayment(existingBookingId?: string) {
+  async function handlePayment() {
+    if (!draft) return
     setLoading(true)
     setError("")
 
     try {
-      let bookingId = existingBookingId
-
-      if (!bookingId && draft) {
-        const bookingResponse = await fetch("/api/bookings", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            quoteId: draft.quoteId,
-            vehicleClassId: draft.vehicleClassId,
-            extras: [],
-            specialRequests: (document.getElementById("specialRequests") as HTMLTextAreaElement)?.value || undefined,
-          }),
-        })
-
-        if (!bookingResponse.ok) {
-          const result = await bookingResponse.json()
-          setError(result.error ?? "Failed to create booking")
-          setLoading(false)
-          return
-        }
-
-        const bookingResult = await bookingResponse.json()
-        bookingId = bookingResult.bookingId
-      }
-
-      const checkoutResponse = await fetch("/api/payments/checkout", {
+      const bookingResponse = await fetch("/api/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ bookingId }),
+        body: JSON.stringify({
+          quoteId: draft.quoteId,
+          vehicleClassId: draft.vehicleClassId,
+          extras: [],
+          specialRequests: (document.getElementById("specialRequests") as HTMLTextAreaElement)?.value || undefined,
+        }),
       })
 
-      if (!checkoutResponse.ok) {
-        const result = await checkoutResponse.json()
-        setError(result.error ?? "Failed to start payment")
+      if (!bookingResponse.ok) {
+        const result = await bookingResponse.json()
+        setError(result.error ?? "Failed to create booking")
         setLoading(false)
         return
       }
 
-      const { url } = await checkoutResponse.json()
-      if (url) {
-        window.location.href = url
-      }
+      const bookingResult = await bookingResponse.json()
+      await redirectToCheckout(bookingResult.bookingId)
     } catch {
       setError("An unexpected error occurred")
       setLoading(false)
     }
   }
 
-  if (error && !draft) {
+  if (!draft) {
     return (
       <div className="mx-auto max-w-2xl text-center">
         <Card>
           <CardContent className="py-12">
-            <p className="text-destructive">{error}</p>
+            <p className="text-destructive">No booking in progress. Please start a new quote.</p>
             <Button className="mt-4" onClick={() => router.push("/book")}>
               Start New Quote
             </Button>
           </CardContent>
         </Card>
-      </div>
-    )
-  }
-
-  if (!draft) {
-    return (
-      <div className="mx-auto max-w-2xl text-center py-12">
-        <p className="text-muted-foreground">Loading...</p>
       </div>
     )
   }
@@ -162,7 +154,7 @@ function BookingDetailsContent() {
             className="w-full"
             size="lg"
             disabled={loading}
-            onClick={() => handlePayment()}
+            onClick={handlePayment}
           >
             {loading ? "Processing..." : `Pay £${parseFloat(draft.vehicle.price).toFixed(2)}`}
           </Button>

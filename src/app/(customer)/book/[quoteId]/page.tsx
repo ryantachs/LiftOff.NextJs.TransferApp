@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useRouter, useParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -29,20 +29,20 @@ export default function VehicleSelectPage() {
   const router = useRouter()
   const params = useParams()
   const quoteId = params.quoteId as string
-  const [quoteData, setQuoteData] = useState<QuoteData | null>(null)
   const [selectedVehicle, setSelectedVehicle] = useState<string>("")
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")
-
-  useEffect(() => {
-    // Quote data is passed via sessionStorage from the quote form
+  const [error] = useState(() => {
+    if (typeof window === "undefined") return ""
     const stored = sessionStorage.getItem(`quote-${quoteId}`)
-    if (stored) {
-      setQuoteData(JSON.parse(stored))
-    } else {
-      setError("Quote data not found. Please start a new quote.")
-    }
-  }, [quoteId])
+    if (!stored) return "Quote data not found. Please start a new quote."
+    return ""
+  })
+  const [quoteData] = useState<QuoteData | null>(() => {
+    if (typeof window === "undefined") return null
+    const stored = sessionStorage.getItem(`quote-${quoteId}`)
+    if (stored) return JSON.parse(stored) as QuoteData
+    return null
+  })
 
   async function handleContinue() {
     if (!selectedVehicle || !quoteData) return
