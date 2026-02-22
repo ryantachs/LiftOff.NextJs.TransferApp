@@ -11,6 +11,7 @@ import {
   Users,
   Car,
   PoundSterling,
+  BarChart3,
 } from "lucide-react"
 
 const navItems: { href: string; label: string; icon: typeof LayoutDashboard; adminOnly?: boolean }[] = [
@@ -21,6 +22,7 @@ const navItems: { href: string; label: string; icon: typeof LayoutDashboard; adm
   { href: "/admin/drivers", label: "Drivers", icon: Users },
   { href: "/admin/vehicles", label: "Vehicles", icon: Car },
   { href: "/admin/pricing", label: "Pricing", icon: PoundSterling, adminOnly: true },
+  { href: "/admin/reports", label: "Reports", icon: BarChart3, adminOnly: true },
 ]
 
 interface AdminSidebarProps {
