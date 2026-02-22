@@ -1,8 +1,16 @@
 import Link from "next/link"
-import { auth } from "@/auth"
+
+async function getSession() {
+  try {
+    const { auth } = await import("@/auth")
+    return await auth()
+  } catch {
+    return null
+  }
+}
 
 export default async function Nav() {
-  const session = await auth()
+  const session = await getSession()
 
   return (
     <nav className="fixed top-0 left-0 z-100 w-full border-b border-gold/10 bg-[linear-gradient(to_bottom,rgba(13,17,23,0.95),transparent)] backdrop-blur-[8px]">
