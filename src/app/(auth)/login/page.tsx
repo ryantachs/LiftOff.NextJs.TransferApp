@@ -46,7 +46,7 @@ function LoginForm() {
           <CardTitle className="text-2xl">Sign In</CardTitle>
           <CardDescription>Enter your credentials to access your account</CardDescription>
         </CardHeader>
-        <form onSubmit={handleSubmit}>
+        <form method="post" onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             {error && (
               <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">

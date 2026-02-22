@@ -1,5 +1,7 @@
 import type { NextConfig } from "next"
 
+const isDev = process.env.NODE_ENV === "development"
+
 const securityHeaders = [
   {
     key: "Strict-Transport-Security",
@@ -12,17 +14,21 @@ const securityHeaders = [
     key: "Permissions-Policy",
     value: "camera=(), microphone=(), geolocation=()",
   },
-  {
-    key: "Content-Security-Policy",
-    value: [
-      "default-src 'self'",
-      "script-src 'self' https://js.stripe.com",
-      "frame-src https://js.stripe.com",
-      "connect-src 'self' https://api.stripe.com https://maps.googleapis.com",
-      "img-src 'self' data: https://maps.gstatic.com https://*.googleapis.com blob:",
-      "style-src 'self' 'unsafe-inline'",
-    ].join("; "),
-  },
+  ...(!isDev
+    ? [
+        {
+          key: "Content-Security-Policy",
+          value: [
+            "default-src 'self'",
+            "script-src 'self' https://js.stripe.com",
+            "frame-src https://js.stripe.com",
+            "connect-src 'self' https://api.stripe.com https://maps.googleapis.com",
+            "img-src 'self' data: https://maps.gstatic.com https://*.googleapis.com blob:",
+            "style-src 'self' 'unsafe-inline'",
+          ].join("; "),
+        },
+      ]
+    : []),
 ]
 
 const nextConfig: NextConfig = {
