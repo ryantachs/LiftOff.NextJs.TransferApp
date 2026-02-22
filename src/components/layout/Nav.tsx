@@ -17,8 +17,8 @@ export default async function Nav() {
       <div className="mx-auto flex max-w-[1400px] items-center justify-between px-6 py-6 lg:px-16">
         {/* Logo */}
         <Link href="/" className="font-serif text-[1.6rem] leading-none">
-          <span className="text-cream">Arrive</span>
-          <span className="text-gold">Smart</span>
+          <span className="text-cream">Lift Off</span>
+          <span className="text-gold"> Travel</span>
         </Link>
 
         {/* Centre links — hidden on mobile */}

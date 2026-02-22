@@ -9,11 +9,11 @@ import { CtaSection } from "@/components/landing/CtaSection"
 import Footer from "@/components/layout/Footer"
 
 export const metadata = {
-  title: "ArriveSmart — Premium Airport Transfers",
+  title: "Lift Off Travel — Premium Airport Transfers",
   description:
     "Fixed-price airport transfers with professional drivers. Book in minutes, travel with confidence.",
   openGraph: {
-    title: "ArriveSmart — Premium Airport Transfers",
+    title: "Lift Off Travel — Premium Airport Transfers",
     description:
       "Fixed-price, no-surprise airport transfers. Book online in minutes.",
     type: "website",

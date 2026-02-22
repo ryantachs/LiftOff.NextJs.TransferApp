@@ -9,6 +9,7 @@ const airports = [
   { code: "BRS", name: "Bristol" },
   { code: "EDI", name: "Edinburgh" },
   { code: "GLA", name: "Glasgow" },
+  { code: "LPL", name: "Liverpool" },
 ]
 
 export function AirportsServed() {

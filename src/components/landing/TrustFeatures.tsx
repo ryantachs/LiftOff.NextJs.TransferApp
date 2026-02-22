@@ -72,7 +72,7 @@ export function TrustFeatures() {
         {/* Right — Feature list */}
         <div>
           <SectionHeader
-            eyebrow="Why ArriveSmart"
+            eyebrow="Why Lift Off Travel"
             title={
               <>
                 Transfers you can <em className="text-gold">actually</em> rely

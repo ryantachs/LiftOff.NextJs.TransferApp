@@ -14,11 +14,11 @@ export default function Footer() {
         {/* Left — logo + copyright */}
         <div>
           <Link href="/" className="font-serif text-[1.4rem] leading-none">
-            <span className="text-cream">Arrive</span>
-            <span className="text-gold">Smart</span>
+            <span className="text-cream">Lift Off</span>
+            <span className="text-gold"> Travel</span>
           </Link>
           <p className="mt-2 font-sans text-[0.78rem] text-body" suppressHydrationWarning>
-            © {new Date().getFullYear()} ArriveSmart. All rights reserved.
+            © {new Date().getFullYear()} Lift Off Travel. All rights reserved.
           </p>
         </div>
 

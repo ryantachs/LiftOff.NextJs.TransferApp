@@ -3,8 +3,8 @@ import { Providers } from "./providers"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "Airport Transfers — Book Your Ride",
-  description: "Premium airport transfer booking service",
+  title: "Lift Off Travel — Book Your Ride",
+  description: "Lift Off Travel — Premium airport transfer booking service",
 }
 
 export default function RootLayout({
