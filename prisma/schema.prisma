@@ -94,18 +94,19 @@ model Booking {
 }
 
 model VehicleClass {
-  id              String    @id @default(cuid())
+  id              String              @id @default(cuid())
   name            String
   description     String
   maxPassengers   Int
   maxLuggage      Int
-  baseRatePerKm   Decimal   @db.Decimal(10, 4)
-  minimumFare     Decimal   @db.Decimal(10, 2)
+  baseRatePerKm   Decimal             @db.Decimal(10, 4)
+  minimumFare     Decimal             @db.Decimal(10, 2)
   imageUrl        String?
-  sortOrder       Int       @default(0)
-  isActive        Boolean   @default(true)
+  sortOrder       Int                 @default(0)
+  isActive        Boolean             @default(true)
   bookings        Booking[]
   vehicles        Vehicle[]
+  extras          ExtraVehicleClass[]
 }
 
 model AuditLog {
@@ -163,6 +164,27 @@ model PricingRule {
   vehicleClassId  String?
   isActive        Boolean   @default(true)
   createdAt       DateTime  @default(now())
+}
+
+model Extra {
+  id              String              @id @default(cuid())
+  name            String
+  description     String?
+  price           Decimal             @db.Decimal(10, 2)
+  isPercentage    Boolean             @default(false)
+  sortOrder       Int                 @default(0)
+  isActive        Boolean             @default(true)
+  vehicleClasses  ExtraVehicleClass[]
+  createdAt       DateTime            @default(now())
+}
+
+model ExtraVehicleClass {
+  extraId        String
+  vehicleClassId String
+  extra          Extra        @relation(fields: [extraId], references: [id], onDelete: Cascade)
+  vehicleClass   VehicleClass @relation(fields: [vehicleClassId], references: [id], onDelete: Cascade)
+
+  @@id([extraId, vehicleClassId])
 }
 
 model Account {
