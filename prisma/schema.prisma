@@ -71,12 +71,16 @@ model Booking {
   totalPrice      Decimal       @db.Decimal(10, 2)
   currency        String        @default("GBP")
 
+  paymentMethod   PaymentMethod @default(STRIPE)
+
   stripeCheckoutSessionId  String?  @unique
   stripePaymentIntentId    String?  @unique
   paidAt          DateTime?
 
   driverId        String?
+  driver          Driver?       @relation(fields: [driverId], references: [id])
   vehicleId       String?
+  vehicle         Vehicle?      @relation(fields: [vehicleId], references: [id])
   assignedAt      DateTime?
 
   specialRequests    String?
@@ -85,6 +89,8 @@ model Booking {
   cancellationReason String?
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
+
+  auditLogs       AuditLog[]
 }
 
 model VehicleClass {
@@ -98,6 +104,50 @@ model VehicleClass {
   imageUrl        String?
   sortOrder       Int       @default(0)
   isActive        Boolean   @default(true)
+  bookings        Booking[]
+  vehicles        Vehicle[]
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  bookingId String
+  booking   Booking  @relation(fields: [bookingId], references: [id])
+  action    String
+  actor     String
+  changes   Json
+  ipAddress String?
+  createdAt DateTime @default(now())
+
+  @@index([bookingId])
+}
+
+model Driver {
+  id              String    @id @default(cuid())
+  name            String
+  email           String    @unique
+  phone           String
+  licenceNumber   String
+  isAvailable     Boolean   @default(true)
+  vehicleId       String?   @unique
+  vehicle         Vehicle?  @relation("DriverVehicle", fields: [vehicleId], references: [id])
+  bookings        Booking[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model Vehicle {
+  id              String       @id @default(cuid())
+  registration    String       @unique
+  make            String
+  model           String
+  year            Int
+  colour          String
+  vehicleClassId  String
+  vehicleClass    VehicleClass @relation(fields: [vehicleClassId], references: [id])
+  motExpiry       DateTime?
+  serviceExpiry   DateTime?
+  isActive        Boolean      @default(true)
+  driver          Driver?      @relation("DriverVehicle")
   bookings        Booking[]
 }
 
@@ -170,4 +220,9 @@ enum JourneyType {
 enum RuleType {
   SURCHARGE
   DISCOUNT
+}
+
+enum PaymentMethod {
+  STRIPE
+  MANUAL
 }
