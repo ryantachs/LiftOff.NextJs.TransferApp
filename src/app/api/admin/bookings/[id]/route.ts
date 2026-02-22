@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma"
 import { writeAuditLog } from "@/lib/audit"
 import { canTransition } from "@/lib/status-transitions"
 import { resend } from "@/lib/resend"
+import { escapeHtml } from "@/lib/utils"
 import type { BookingStatus } from "@prisma/client"
 
 export async function GET(
@@ -139,10 +140,10 @@ export async function PATCH(
           to: booking.user.email,
           subject: `Journey Started — ${booking.reference}`,
           html: `<h1>Journey In Progress</h1>
-            <p>Hi ${booking.user.name},</p>
-            <p>Your journey for booking <strong>${booking.reference}</strong> is now in progress.</p>
-            <p><strong>Pickup:</strong> ${booking.pickupAddress}</p>
-            <p><strong>Dropoff:</strong> ${booking.dropoffAddress}</p>`,
+            <p>Hi ${escapeHtml(booking.user.name)},</p>
+            <p>Your journey for booking <strong>${escapeHtml(booking.reference)}</strong> is now in progress.</p>
+            <p><strong>Pickup:</strong> ${escapeHtml(booking.pickupAddress)}</p>
+            <p><strong>Dropoff:</strong> ${escapeHtml(booking.dropoffAddress)}</p>`,
         })
       } else if (newStatus === "COMPLETED") {
         await resend.emails.send({
@@ -150,8 +151,8 @@ export async function PATCH(
           to: booking.user.email,
           subject: `Journey Completed — ${booking.reference}`,
           html: `<h1>Journey Completed</h1>
-            <p>Hi ${booking.user.name},</p>
-            <p>Your journey for booking <strong>${booking.reference}</strong> has been completed.</p>
+            <p>Hi ${escapeHtml(booking.user.name)},</p>
+            <p>Your journey for booking <strong>${escapeHtml(booking.reference)}</strong> has been completed.</p>
             <p>Thank you for choosing our airport transfer service.</p>`,
         })
       }

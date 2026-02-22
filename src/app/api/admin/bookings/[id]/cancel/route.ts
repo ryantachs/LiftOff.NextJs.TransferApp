@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma"
 import { writeAuditLog } from "@/lib/audit"
 import { stripe } from "@/lib/stripe"
 import { resend } from "@/lib/resend"
+import { escapeHtml } from "@/lib/utils"
 
 export async function POST(
   request: Request,
@@ -81,11 +82,11 @@ export async function POST(
       to: booking.user.email,
       subject: `Booking ${booking.reference} Cancelled`,
       html: `<h1>Booking Cancelled</h1>
-        <p>Hi ${booking.user.name},</p>
-        <p>Your booking <strong>${booking.reference}</strong> has been cancelled by our team.</p>
-        <p><strong>Pickup:</strong> ${booking.pickupAddress}</p>
-        <p><strong>Dropoff:</strong> ${booking.dropoffAddress}</p>
-        <p><strong>Reason:</strong> ${body.reason.trim()}</p>
+        <p>Hi ${escapeHtml(booking.user.name)},</p>
+        <p>Your booking <strong>${escapeHtml(booking.reference)}</strong> has been cancelled by our team.</p>
+        <p><strong>Pickup:</strong> ${escapeHtml(booking.pickupAddress)}</p>
+        <p><strong>Dropoff:</strong> ${escapeHtml(booking.dropoffAddress)}</p>
+        <p><strong>Reason:</strong> ${escapeHtml(body.reason.trim())}</p>
         ${refundId ? "<p>A refund has been initiated and will appear on your statement within 5-10 business days.</p>" : ""}`,
     })
   } catch {

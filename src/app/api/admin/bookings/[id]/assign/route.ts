@@ -2,6 +2,7 @@ import { requireAdmin } from "@/lib/auth-guards"
 import { prisma } from "@/lib/prisma"
 import { writeAuditLog } from "@/lib/audit"
 import { resend } from "@/lib/resend"
+import { escapeHtml } from "@/lib/utils"
 
 export async function POST(
   request: Request,
@@ -100,11 +101,11 @@ export async function POST(
       to: booking.user.email,
       subject: `Driver Confirmed — ${booking.reference}`,
       html: `<h1>Driver Confirmed</h1>
-        <p>Hi ${booking.user.name},</p>
-        <p>A driver has been assigned to your booking <strong>${booking.reference}</strong>.</p>
-        <p><strong>Driver:</strong> ${driver.name}</p>
-        <p><strong>Phone:</strong> ${driver.phone}</p>
-        <p><strong>Vehicle:</strong> ${vehicle.make} ${vehicle.model} (${vehicle.colour}, ${vehicle.registration})</p>`,
+        <p>Hi ${escapeHtml(booking.user.name)},</p>
+        <p>A driver has been assigned to your booking <strong>${escapeHtml(booking.reference)}</strong>.</p>
+        <p><strong>Driver:</strong> ${escapeHtml(driver.name)}</p>
+        <p><strong>Phone:</strong> ${escapeHtml(driver.phone)}</p>
+        <p><strong>Vehicle:</strong> ${escapeHtml(vehicle.make)} ${escapeHtml(vehicle.model)} (${escapeHtml(vehicle.colour)}, ${escapeHtml(vehicle.registration)})</p>`,
     })
   } catch {
     console.error("Failed to send customer assignment email for booking:", id)
@@ -117,16 +118,16 @@ export async function POST(
       to: driver.email,
       subject: `New Assignment — ${booking.reference}`,
       html: `<h1>New Journey Assignment</h1>
-        <p>Hi ${driver.name},</p>
-        <p>You have been assigned booking <strong>${booking.reference}</strong>.</p>
-        <p><strong>Customer:</strong> ${booking.user.name}</p>
-        <p><strong>Pickup:</strong> ${booking.pickupAddress}</p>
-        <p><strong>Dropoff:</strong> ${booking.dropoffAddress}</p>
-        <p><strong>Date/Time:</strong> ${booking.pickupDateTime.toISOString()}</p>
+        <p>Hi ${escapeHtml(driver.name)},</p>
+        <p>You have been assigned booking <strong>${escapeHtml(booking.reference)}</strong>.</p>
+        <p><strong>Customer:</strong> ${escapeHtml(booking.user.name)}</p>
+        <p><strong>Pickup:</strong> ${escapeHtml(booking.pickupAddress)}</p>
+        <p><strong>Dropoff:</strong> ${escapeHtml(booking.dropoffAddress)}</p>
+        <p><strong>Date/Time:</strong> ${escapeHtml(booking.pickupDateTime.toISOString())}</p>
         <p><strong>Passengers:</strong> ${booking.passengers}</p>
         <p><strong>Luggage:</strong> ${booking.luggage}</p>
-        ${booking.flightNumber ? `<p><strong>Flight:</strong> ${booking.flightNumber}</p>` : ""}
-        ${booking.specialRequests ? `<p><strong>Special Requests:</strong> ${booking.specialRequests}</p>` : ""}`,
+        ${booking.flightNumber ? `<p><strong>Flight:</strong> ${escapeHtml(booking.flightNumber)}</p>` : ""}
+        ${booking.specialRequests ? `<p><strong>Special Requests:</strong> ${escapeHtml(booking.specialRequests)}</p>` : ""}`,
     })
   } catch {
     console.error("Failed to send driver assignment email for booking:", id)
