@@ -13,7 +13,7 @@
       "skipFiles": ["<node_internals>/**"],
       "console": "integratedTerminal",
       "serverReadyAction": {
-        "action": "debugWithChrome",
+        "action": "debugWithEdge",
         "killOnServerStop": true,
         "pattern": "- Local:.+(https?://.+)",
         "uriFormat": "%s"
@@ -21,7 +21,7 @@
     },
     {
       "name": "Next.js: debug client-side",
-      "type": "chrome",
+      "type": "msedge",
       "request": "launch",
       "url": "http://localhost:3000"
     },
@@ -37,7 +37,7 @@
       "skipFiles": ["<node_internals>/**"],
       "console": "integratedTerminal",
       "serverReadyAction": {
-        "action": "debugWithChrome",
+        "action": "debugWithEdge",
         "killOnServerStop": true,
         "pattern": "- Local:.+(https?://.+)",
         "uriFormat": "%s"
