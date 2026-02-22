@@ -1,0 +1,173 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified DateTime?
+  name          String
+  phone         String?
+  passwordHash  String?
+  role          Role      @default(CUSTOMER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  bookings      Booking[]
+  accounts      Account[]
+  sessions      Session[]
+}
+
+model Quote {
+  id              String      @id @default(cuid())
+  userId          String
+  journeyType     JourneyType
+  pickupAddress   String
+  pickupLat       Float
+  pickupLng       Float
+  dropoffAddress  String
+  dropoffLat      Float
+  dropoffLng      Float
+  distanceKm      Float
+  durationMins    Int
+  flightNumber    String?
+  pickupDateTime  DateTime
+  passengers      Int
+  luggage         Int
+  expiresAt       DateTime
+  vehicleClassId  String?
+  extrasJson      Json        @default("[]")
+  createdAt       DateTime    @default(now())
+}
+
+model Booking {
+  id              String        @id @default(cuid())
+  reference       String        @unique
+  status          BookingStatus @default(PENDING_PAYMENT)
+  userId          String
+  user            User          @relation(fields: [userId], references: [id])
+
+  journeyType     JourneyType
+  pickupAddress   String
+  pickupLat       Float
+  pickupLng       Float
+  dropoffAddress  String
+  dropoffLat      Float
+  dropoffLng      Float
+  distanceKm      Float
+  flightNumber    String?
+  pickupDateTime  DateTime
+  passengers      Int
+  luggage         Int
+
+  vehicleClassId  String
+  vehicleClass    VehicleClass  @relation(fields: [vehicleClassId], references: [id])
+  extras          Json          @default("[]")
+  basePrice       Decimal       @db.Decimal(10, 2)
+  extrasPrice     Decimal       @db.Decimal(10, 2) @default(0)
+  totalPrice      Decimal       @db.Decimal(10, 2)
+  currency        String        @default("GBP")
+
+  stripeCheckoutSessionId  String?  @unique
+  stripePaymentIntentId    String?  @unique
+  paidAt          DateTime?
+
+  driverId        String?
+  vehicleId       String?
+  assignedAt      DateTime?
+
+  specialRequests    String?
+  internalNotes      String?
+  cancelledAt        DateTime?
+  cancellationReason String?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+}
+
+model VehicleClass {
+  id              String    @id @default(cuid())
+  name            String
+  description     String
+  maxPassengers   Int
+  maxLuggage      Int
+  baseRatePerKm   Decimal   @db.Decimal(10, 4)
+  minimumFare     Decimal   @db.Decimal(10, 2)
+  imageUrl        String?
+  sortOrder       Int       @default(0)
+  isActive        Boolean   @default(true)
+  bookings        Booking[]
+}
+
+model PricingRule {
+  id              String    @id @default(cuid())
+  name            String
+  type            RuleType
+  value           Decimal   @db.Decimal(10, 2)
+  isPercentage    Boolean   @default(false)
+  appliesFrom     DateTime?
+  appliesTo       DateTime?
+  daysOfWeek      Int[]
+  vehicleClassId  String?
+  isActive        Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  @@unique([identifier, token])
+}
+
+enum Role {
+  CUSTOMER
+  DISPATCHER
+  ADMIN
+}
+
+enum BookingStatus {
+  PENDING_PAYMENT
+  CONFIRMED
+  ASSIGNED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum JourneyType {
+  PICKUP
+  DROPOFF
+}
+
+enum RuleType {
+  SURCHARGE
+  DISCOUNT
+}
