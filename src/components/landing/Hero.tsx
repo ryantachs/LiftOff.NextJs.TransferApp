@@ -18,7 +18,7 @@ export function Hero() {
       />
 
       {/* Content grid */}
-      <div className="relative mx-auto grid max-w-[1400px] grid-cols-1 items-center gap-12 px-6 pt-32 pb-20 lg:grid-cols-2 lg:px-16 lg:pt-0 lg:pb-0 lg:min-h-screen">
+      <div className="relative z-10 mx-auto grid max-w-[1400px] grid-cols-1 items-center gap-12 px-6 pt-32 pb-20 lg:grid-cols-2 lg:px-16 lg:pt-0 lg:pb-0 lg:min-h-screen">
         {/* Left — Hero copy */}
         <div className="max-w-xl">
           {/* Eyebrow */}

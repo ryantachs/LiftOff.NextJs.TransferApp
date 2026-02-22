@@ -13,7 +13,7 @@ export default async function Nav() {
   const session = await getSession()
 
   return (
-    <nav className="fixed top-0 left-0 z-50 w-full border-b border-gold/10 bg-[linear-gradient(to_bottom,rgba(13,17,23,0.95),transparent)] backdrop-blur-[8px]">
+    <nav className="fixed top-0 left-0 z-50 w-full border-b border-gold/10 bg-ink/80 backdrop-blur-md">
       <div className="mx-auto flex max-w-[1400px] items-center justify-between px-6 py-6 lg:px-16">
         {/* Logo */}
         <Link href="/" className="font-serif text-[1.6rem] leading-none">

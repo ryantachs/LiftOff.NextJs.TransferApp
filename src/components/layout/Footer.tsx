@@ -17,7 +17,7 @@ export default function Footer() {
             <span className="text-cream">Arrive</span>
             <span className="text-gold">Smart</span>
           </Link>
-          <p className="mt-2 font-sans text-[0.78rem] text-body">
+          <p className="mt-2 font-sans text-[0.78rem] text-body" suppressHydrationWarning>
             © {new Date().getFullYear()} ArriveSmart. All rights reserved.
           </p>
         </div>
