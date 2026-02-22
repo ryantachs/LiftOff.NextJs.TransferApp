@@ -16,9 +16,10 @@ model User {
   role          Role      @default(CUSTOMER)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  bookings      Booking[]
-  accounts      Account[]
-  sessions      Session[]
+  bookings       Booking[]
+  accounts       Account[]
+  sessions       Session[]
+  savedAddresses SavedAddress[]
 }
 
 model Quote {
@@ -185,6 +186,20 @@ model ExtraVehicleClass {
   vehicleClass   VehicleClass @relation(fields: [vehicleClassId], references: [id], onDelete: Cascade)
 
   @@id([extraId, vehicleClassId])
+}
+
+model SavedAddress {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  label     String
+  address   String
+  lat       Float
+  lng       Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }
 
 model Account {

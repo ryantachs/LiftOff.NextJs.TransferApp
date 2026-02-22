@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma"
+import type { Prisma } from "@prisma/client"
 
 export async function writeAuditLog({
   bookingId,
@@ -18,7 +19,7 @@ export async function writeAuditLog({
       bookingId,
       action,
       actor,
-      changes,
+      changes: changes as Prisma.InputJsonValue,
       ipAddress,
     },
   })
