@@ -241,7 +241,7 @@ export function ManualBookingForm({ vehicleClasses }: ManualBookingFormProps) {
             onChange={(e) => updateField("markAsPaid", e.target.checked)}
             className="rounded border"
           />
-          <span className="text-sm">Mark as paid (cash/phone card)</span>
+          <span className="text-sm">Mark as paid (cash/card over phone)</span>
         </label>
         <p className="text-xs text-muted-foreground">
           Manual bookings bypass Stripe. Check this if payment has already been received.

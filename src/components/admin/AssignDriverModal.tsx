@@ -38,7 +38,7 @@ export function AssignDriverModal({
   onAssigned,
 }: AssignDriverModalProps) {
   const [drivers, setDrivers] = useState<Driver[]>([])
-  const [vehicles, setVehicles] = useState<Vehicle[]>([])
+  const [vehicles] = useState<Vehicle[]>([])
   const [selectedDriverId, setSelectedDriverId] = useState("")
   const [selectedVehicleId, setSelectedVehicleId] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -55,12 +55,6 @@ export function AssignDriverModal({
             (d: Driver) => d.vehicleClassId === vehicleClassId || !d.vehicleClassId
           )
         )
-      })
-      .catch(() => {})
-
-    fetch(`/api/admin/dispatch?dateFrom=${new Date().toISOString()}&dateTo=${new Date(Date.now() + 86400000).toISOString()}`)
-      .then(() => {
-        // Vehicles come from the driver's assigned vehicle, we handle in selection
       })
       .catch(() => {})
   }, [isOpen, vehicleClassId])

@@ -27,7 +27,7 @@ const statusColors: Record<string, string> = {
   COMPLETED: "bg-green-200 border-green-300 text-green-900",
 }
 
-const hours = Array.from({ length: 19 }, (_, i) => i + 6) // 6am to midnight
+const hours = Array.from({ length: 18 }, (_, i) => i + 6) // 6am to 11pm
 
 export function DispatchTimeline({ bookings, date }: DispatchTimelineProps) {
   const assignedBookings = bookings.filter((b) => b.driverId)
@@ -77,7 +77,7 @@ export function DispatchTimeline({ bookings, date }: DispatchTimelineProps) {
               const pickupTime = new Date(b.pickupDateTime)
               const hour = pickupTime.getHours()
               const minute = pickupTime.getMinutes()
-              const startPos = ((hour - 6) * 60 + minute) / (19 * 60) * 100
+              const startPos = ((hour - 6) * 60 + minute) / (18 * 60) * 100
 
               return (
                 <div

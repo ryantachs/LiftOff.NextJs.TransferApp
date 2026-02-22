@@ -6,9 +6,8 @@ import { nanoid } from "@/lib/nanoid"
 import { NextRequest } from "next/server"
 
 export async function GET(request: NextRequest) {
-  let session
   try {
-    session = await requireAdmin()
+    await requireAdmin()
   } catch (res) {
     return res as Response
   }
@@ -76,8 +75,6 @@ export async function GET(request: NextRequest) {
     }),
     prisma.booking.count({ where }),
   ])
-
-  void session
 
   return Response.json({
     bookings: bookings.map((b) => ({

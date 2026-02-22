@@ -50,6 +50,8 @@ export function UnassignedBookingsList({
           <div className="flex items-center justify-between text-xs">
             <span>
               {new Date(b.pickupDateTime).toLocaleString("en-GB", {
+                day: "2-digit",
+                month: "short",
                 hour: "2-digit",
                 minute: "2-digit",
               })}

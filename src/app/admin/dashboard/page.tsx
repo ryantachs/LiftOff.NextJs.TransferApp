@@ -57,7 +57,7 @@ export default async function AdminDashboardPage() {
         <Card>
           <CardHeader>
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Today&apos;s Bookings
+              {"Today's Bookings"}
             </CardTitle>
           </CardHeader>
           <CardContent>
